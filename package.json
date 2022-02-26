@@ -1,0 +1,49 @@
+{
+	"name": "file-git-history",
+	"displayName": "File Git History",
+	"description": "View File History in SideMenu.",
+	"publisher": "saber2pr",
+	"version": "0.0.1",
+	"engines": {
+		"vscode": "^1.56.0"
+	},
+	"categories": [
+		"Visualization"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Saber2pr/vsc-file-git-history.git"
+	},
+	"icon": "assets/logo.png",
+	"activationEvents": [
+		"*"
+	],
+	"main": "./out/extension.js",
+	"contributes": {
+		"views": {
+			"scm": [
+				{
+					"id": "file-git-history",
+					"icon": "assets/logo.png",
+					"name": "File Git History"
+				}
+			]
+		}
+	},
+	"scripts": {
+		"vscode:prepublish": "yarn run compile",
+		"compile": "tsc -p ./",
+		"watch": "tsc -watch -p ./",
+		"build": "vsce package",
+		"release": "standard-version"
+	},
+	"devDependencies": {
+		"@types/node": "^12.11.7",
+		"@types/vscode": "^1.56.0",
+		"standard-version": "^9.3.1",
+		"typescript": "^4.4.4"
+	},
+	"extensionDependencies": [
+		"mhutchie.git-graph"
+	]
+}

@@ -20,12 +20,27 @@
 	],
 	"main": "./out/extension.js",
 	"contributes": {
+		"commands": [
+			{
+				"title": "Checkout Commit",
+				"command": "file-git-history.checkout",
+				"icon": "$(timeline-open)"
+			}
+		],
 		"views": {
 			"scm": [
 				{
 					"id": "file-git-history",
 					"icon": "assets/logo.png",
 					"name": "File Git History"
+				}
+			]
+		},
+		"menus": {
+			"view/item/context": [
+				{
+					"command": "file-git-history.checkout",
+					"group": "inline"
 				}
 			]
 		}

@@ -94,7 +94,7 @@ export class FileHistoryViewerProvider
   }
 }
 
-class NodeItem extends vscode.TreeItem {
+export class NodeItem extends vscode.TreeItem {
   constructor(
     public readonly commit: Commit,
     public readonly collapsibleState: vscode.TreeItemCollapsibleState = vscode

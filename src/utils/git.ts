@@ -28,3 +28,7 @@ export const getFileCommits = async (path: string): Promise<Commit[]> => {
     })
   }
 }
+
+export const checkoutCommit = async (commit: string) => {
+  await execShell('git', ['checkout', commit], 'inherit')
+}

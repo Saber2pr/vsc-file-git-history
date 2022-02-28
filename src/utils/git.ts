@@ -11,8 +11,6 @@ export type Commit = {
 export const getFileCommits = async (path: string): Promise<Commit[]> => {
   const str = await execShell('git', [
     'log',
-    '--follow',
-    '--all',
     '--pretty=oneline',
     '--',
     resolve(path),

@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.6](https://github.com/Saber2pr/vsc-file-git-history/compare/v0.0.5...v0.0.6) (2022-02-28)
+
+
+### Bug Fixes
+
+* all ([fbf9fc0](https://github.com/Saber2pr/vsc-file-git-history/commit/fbf9fc0bab591c4f6527ebf55e642848b178a047))
+
 ### [0.0.5](https://github.com/Saber2pr/vsc-file-git-history/compare/v0.0.4...v0.0.5) (2022-02-28)
 
 

@@ -35,7 +35,7 @@ export class FileHistoryViewerProvider
   async getTreeItem(node: NodeItem): Promise<vscode.TreeItem> {
     let filePath = this.getCurrentFilePath()
     const repo = getRootPath()
-    filePath = filePath.replace(repo, '').replace(/^\\/, '')
+    filePath = filePath.replace(repo, '').replace(/^(\\)|(\/)/, '')
 
     const commit = node.commit.commit
     const commitIndex = node.commit.index
@@ -85,7 +85,7 @@ export class FileHistoryViewerProvider
       const fileName = textEditor.document?.fileName
 
       // if is diff, skip reset
-      if (fileName && fileName.startsWith('\\file')) {
+      if (fileName && (fileName.startsWith('\\file') || fileName.startsWith('/file'))) {
         return
       }
       this.textEditor = textEditor

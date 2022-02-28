@@ -25,11 +25,20 @@ export function activate(context: vscode.ExtensionContext) {
           },
           async progress => {
             progress.report({ increment: 0 })
-            await checkoutCommit(commit)
-            progress.report({
-              increment: 100,
-              message: `checkouted commit: ${commit}`,
-            })
+            try {
+              await checkoutCommit(commit)
+            } catch (error) {
+              console.log(error)
+              if (/err/.test(error)) {
+                vscode.window.showErrorMessage(error)
+              } else {
+                const title = node?.commit?.title
+                vscode.window.showInformationMessage(
+                  `Checkouted ${commit.slice(0, 7)}: ${title}`
+                )
+              }
+            }
+            progress.report({ increment: 100 })
           }
         )
       } else {

@@ -7,11 +7,12 @@ export type Commit = {
   index: number
 }
 
-// git log --follow --abbrev-commit --pretty=oneline -- <file>
+// git log --follow --all --abbrev-commit --pretty=oneline -- <file>
 export const getFileCommits = async (path: string): Promise<Commit[]> => {
   const str = await execShell('git', [
     'log',
     '--follow',
+    '--all',
     '--pretty=oneline',
     '--',
     resolve(path),

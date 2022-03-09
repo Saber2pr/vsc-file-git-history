@@ -40,7 +40,8 @@
 			"view/item/context": [
 				{
 					"command": "file-git-history.checkout",
-					"group": "inline"
+					"group": "inline",
+					"when": "view == file-git-history"
 				}
 			]
 		}

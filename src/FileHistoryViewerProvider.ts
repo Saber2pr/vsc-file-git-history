@@ -37,10 +37,13 @@ export class FileHistoryViewerProvider
     const repo = getRootPath()
     filePath = filePath.replace(repo, '').replace(/^(\\)|(\/)/, '')
 
-    const commit = node.commit.commit
-    const commitIndex = node.commit.index
+    const nodeCommit = node.commit
+    const commit = nodeCommit.commit
 
-    const isUpdateCommit = commitIndex > 0
+    const isUpdateCommit = nodeCommit.insertions > 0 && nodeCommit.deletions > 0
+    const isDeleteCommit = nodeCommit.deletions === nodeCommit.changes
+    const isAddCommit = nodeCommit.insertions === nodeCommit.changes
+
     const shortCommit = commit.slice(0, 7)
 
     const result = parse(filePath)
@@ -49,7 +52,11 @@ export class FileHistoryViewerProvider
     const title = `${fileName}(${
       isUpdateCommit
         ? `${shortCommit}^ ~ ${shortCommit}`
-        : `Added in ${shortCommit}`
+        : isAddCommit
+        ? `Added in ${shortCommit}`
+        : isDeleteCommit
+        ? `Deleted in ${shortCommit}`
+        : ''
     })`
 
     node.command = {
@@ -60,9 +67,14 @@ export class FileHistoryViewerProvider
           getPathFromStr(repo),
           filePath,
           `${commit}^`,
-          isUpdateCommit
+          isUpdateCommit || isDeleteCommit
         ),
-        encodeDiffDocUri(getPathFromStr(repo), filePath, `${commit}`, true),
+        encodeDiffDocUri(
+          getPathFromStr(repo),
+          filePath,
+          `${commit}`,
+          !isDeleteCommit || isAddCommit
+        ),
         title,
         {
           preview: true,
@@ -85,7 +97,10 @@ export class FileHistoryViewerProvider
       const fileName = textEditor.document?.fileName
 
       // if is diff, skip reset
-      if (fileName && (fileName.startsWith('\\file') || fileName.startsWith('/file'))) {
+      if (
+        fileName &&
+        (fileName.startsWith('\\file') || fileName.startsWith('/file'))
+      ) {
         return
       }
       this.textEditor = textEditor
@@ -100,6 +115,17 @@ export class NodeItem extends vscode.TreeItem {
     public readonly collapsibleState: vscode.TreeItemCollapsibleState = vscode
       .TreeItemCollapsibleState.Collapsed
   ) {
-    super(`${commit.commit.slice(0, 7)}: ${commit.title}`, collapsibleState)
+    let title = `${commit.commit.slice(0, 7)}: ${commit.title}`
+    const changes = []
+    if (commit.insertions > 0) {
+      changes.push(`+${commit.insertions}`)
+    }
+    if (commit.deletions > 0) {
+      changes.push(`-${commit.deletions}`)
+    }
+    if (changes.length > 0) {
+      title += ` ${changes.join('|')}`
+    }
+    super(title, collapsibleState)
   }
 }

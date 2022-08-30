@@ -3,7 +3,12 @@ import { parse } from 'path'
 import * as vscode from 'vscode'
 import { encodeDiffDocUri, getPathFromStr } from './utils/encodeDiffDocUri'
 import { getArray } from './utils/getArray'
-import { Commit, getFileCommits } from './utils/git'
+import {
+  Commit,
+  CommitType,
+  getFileCommits,
+  getFileCommitType,
+} from './utils/git'
 
 export class FileHistoryViewerProvider
   implements vscode.TreeDataProvider<NodeItem>
@@ -33,16 +38,25 @@ export class FileHistoryViewerProvider
   }
 
   async getTreeItem(node: NodeItem): Promise<vscode.TreeItem> {
-    let filePath = this.getCurrentFilePath()
+    const filePathAbs = this.getCurrentFilePath()
     const repo = getRootPath()
-    filePath = filePath.replace(repo, '').replace(/^(\\)|(\/)/, '')
+    const filePath = filePathAbs.replace(repo, '').replace(/^(\\)|(\/)/, '')
 
     const nodeCommit = node.commit
     const commit = nodeCommit.commit
 
-    const isUpdateCommit = nodeCommit.insertions > 0 && nodeCommit.deletions > 0
-    const isDeleteCommit = nodeCommit.deletions === nodeCommit.changes
-    const isAddCommit = nodeCommit.insertions === nodeCommit.changes
+    const isFirstCommit = nodeCommit.isFirstCommit
+
+    let commitType: CommitType = 'update'
+    if (isFirstCommit) {
+      commitType = 'new'
+    } else {
+      commitType = await getFileCommitType(filePathAbs, commit)
+    }
+
+    const isUpdateCommit = commitType === 'update'
+    const isDeleteCommit = commitType === 'deleted'
+    const isAddCommit = commitType === 'new'
 
     const shortCommit = commit.slice(0, 7)
 

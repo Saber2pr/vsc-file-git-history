@@ -116,3 +116,28 @@ export const parseLog = (log: string) => {
   }
   return nodes
 }
+// git diff <start>^..<end> -- <file>
+export const getFileCommitType = async (
+  path: string,
+  commit: string
+): Promise<CommitType> => {
+  try {
+    const str = await execShell('git', [
+      'diff',
+      `${commit}^..${commit}`,
+      '--',
+      resolve(path),
+    ])
+    if (str) {
+      if (/new file mode/.test(str)) {
+        return 'new'
+      }
+      if (/deleted file mode/.test(str)) {
+        return 'deleted'
+      }
+    }
+  } catch (error) {}
+  return 'update'
+}
+
+export type CommitType = 'new' | 'update' | 'deleted'

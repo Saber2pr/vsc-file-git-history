@@ -25,6 +25,11 @@
 				"title": "Checkout Commit",
 				"command": "file-git-history.checkout",
 				"icon": "$(timeline-open)"
+			},
+			{
+				"title": "Open File",
+				"command": "file-git-history.openFile",
+				"icon": "$(go-to-file)"
 			}
 		],
 		"views": {
@@ -40,6 +45,11 @@
 			"view/item/context": [
 				{
 					"command": "file-git-history.checkout",
+					"group": "inline",
+					"when": "view == file-git-history"
+				},
+				{
+					"command": "file-git-history.openFile",
 					"group": "inline",
 					"when": "view == file-git-history"
 				}

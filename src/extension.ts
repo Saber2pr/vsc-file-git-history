@@ -1,10 +1,12 @@
-import { checkoutCommit } from './utils/git'
+import * as vscode from 'vscode'
+
+import { COM_CHECKOUT, COM_OPEN_FILE } from './constants'
 import {
   FileHistoryViewerProvider,
   NodeItem,
 } from './FileHistoryViewerProvider'
-import * as vscode from 'vscode'
-import { COM_CHECKOUT } from './constants'
+import { openFile } from './utils/editor'
+import { checkoutCommit } from './utils/git'
 
 // install
 export function activate(context: vscode.ExtensionContext) {
@@ -14,6 +16,18 @@ export function activate(context: vscode.ExtensionContext) {
     treeDataProvider: Provider,
   })
   context.subscriptions.push(
+    vscode.commands.registerCommand(COM_OPEN_FILE, async node => {
+      const filePath = node?.commit?.file
+      try {
+        if (filePath) {
+          await openFile(filePath)
+        } else {
+          throw 'no such file'
+        }
+      } catch (error) {
+        vscode.window.showErrorMessage(`Open File Fail: ${String(error)}`)
+      }
+    }),
     TreeView,
     vscode.window.onDidChangeActiveTextEditor(Provider.changeEditor),
     vscode.commands.registerCommand(COM_CHECKOUT, (node: NodeItem) => {

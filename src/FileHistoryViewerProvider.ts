@@ -30,7 +30,8 @@ export class FileHistoryViewerProvider
       const file = this.getCurrentFilePath()
       const commits = await getFileCommits(file)
       return getArray(commits).map(
-        commit => new NodeItem(commit, vscode.TreeItemCollapsibleState.None)
+        commit =>
+          new NodeItem(file, commit, vscode.TreeItemCollapsibleState.None)
       )
     } else {
       return []
@@ -125,6 +126,7 @@ export class FileHistoryViewerProvider
 
 export class NodeItem extends vscode.TreeItem {
   constructor(
+    public readonly originFile: string,
     public readonly commit: Commit,
     public readonly collapsibleState: vscode.TreeItemCollapsibleState = vscode
       .TreeItemCollapsibleState.Collapsed

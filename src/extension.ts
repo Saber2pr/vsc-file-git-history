@@ -17,7 +17,7 @@ export function activate(context: vscode.ExtensionContext) {
   })
   context.subscriptions.push(
     vscode.commands.registerCommand(COM_OPEN_FILE, async node => {
-      const filePath = node?.commit?.file
+      const filePath = node?.originFile
       try {
         if (filePath) {
           await openFile(filePath)

@@ -47,10 +47,12 @@
 					"command": "file-git-history.checkout",
 					"group": "inline",
 					"when": "view == file-git-history"
-				},
+				}
+			],
+			"view/title": [
 				{
 					"command": "file-git-history.openFile",
-					"group": "inline",
+					"group": "navigation",
 					"when": "view == file-git-history"
 				}
 			]

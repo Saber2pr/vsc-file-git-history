@@ -11,18 +11,18 @@ import { checkoutCommit } from './utils/git'
 // install
 export function activate(context: vscode.ExtensionContext) {
   const Provider = new FileHistoryViewerProvider()
-
+  
   const TreeView = vscode.window.createTreeView('file-git-history', {
     treeDataProvider: Provider,
   })
   context.subscriptions.push(
-    vscode.commands.registerCommand(COM_OPEN_FILE, async node => {
-      const filePath = node?.originFile
+    vscode.commands.registerCommand(COM_OPEN_FILE, async () => {
+    const filePath = Provider.getCurrentFilePath()
       try {
         if (filePath) {
           await openFile(filePath)
         } else {
-          throw 'no such file'
+          throw 'no such file:' + filePath
         }
       } catch (error) {
         vscode.window.showErrorMessage(`Open File Fail: ${String(error)}`)

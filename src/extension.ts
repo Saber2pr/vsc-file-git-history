@@ -1,23 +1,30 @@
 import * as vscode from 'vscode'
 
-import { COM_CHECKOUT, COM_OPEN_FILE } from './constants'
+import {
+  COM_CHECKOUT,
+  COM_COPY_COMMIT,
+  COM_OPEN_FILE,
+  COM_RELOAD,
+} from './constants'
 import {
   FileHistoryViewerProvider,
   NodeItem,
 } from './FileHistoryViewerProvider'
+import { COMMANDS } from './utils/commands'
 import { openFile } from './utils/editor'
 import { checkoutCommit } from './utils/git'
+import ncp from 'copy-paste'
 
 // install
 export function activate(context: vscode.ExtensionContext) {
   const Provider = new FileHistoryViewerProvider()
-  
+
   const TreeView = vscode.window.createTreeView('file-git-history', {
     treeDataProvider: Provider,
   })
   context.subscriptions.push(
     vscode.commands.registerCommand(COM_OPEN_FILE, async () => {
-    const filePath = Provider.getCurrentFilePath()
+      const filePath = Provider.getCurrentFilePath()
       try {
         if (filePath) {
           await openFile(filePath)
@@ -30,6 +37,18 @@ export function activate(context: vscode.ExtensionContext) {
     }),
     TreeView,
     vscode.window.onDidChangeActiveTextEditor(Provider.changeEditor),
+    vscode.commands.registerCommand(COM_RELOAD, () => {
+      vscode.commands.executeCommand(COMMANDS.reload)
+    }),
+    vscode.commands.registerCommand(COM_COPY_COMMIT, (node: NodeItem) => {
+      const commit = node?.commit?.commit
+      if (commit) {
+        ncp.copy(commit)
+        vscode.window.showInformationMessage(`Copy ${commit}`)
+      } else {
+        vscode.window.showErrorMessage(`Copy commit fail`)
+      }
+    }),
     vscode.commands.registerCommand(COM_CHECKOUT, (node: NodeItem) => {
       const commit = node?.commit?.commit
       if (commit) {

@@ -44,7 +44,6 @@ export function activate(context: vscode.ExtensionContext) {
       if (commit) {
         try {
           await vscode.env.clipboard.writeText(commit)
-          vscode.window.showInformationMessage(`Copy ${commit}`)
         } catch (error) {
           vscode.window.showErrorMessage(`Copy commit fail:` + String(error))
         }

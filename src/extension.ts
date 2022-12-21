@@ -13,7 +13,6 @@ import {
 import { COMMANDS } from './utils/commands'
 import { openFile } from './utils/editor'
 import { checkoutCommit } from './utils/git'
-import ncp from 'copy-paste'
 
 // install
 export function activate(context: vscode.ExtensionContext) {
@@ -40,13 +39,17 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand(COM_RELOAD, () => {
       vscode.commands.executeCommand(COMMANDS.reload)
     }),
-    vscode.commands.registerCommand(COM_COPY_COMMIT, (node: NodeItem) => {
+    vscode.commands.registerCommand(COM_COPY_COMMIT, async (node: NodeItem) => {
       const commit = node?.commit?.commit
       if (commit) {
-        ncp.copy(commit)
-        vscode.window.showInformationMessage(`Copy ${commit}`)
+        try {
+          await vscode.env.clipboard.writeText(commit)
+          vscode.window.showInformationMessage(`Copy ${commit}`)
+        } catch (error) {
+          vscode.window.showErrorMessage(`Copy commit fail:` + String(error))
+        }
       } else {
-        vscode.window.showErrorMessage(`Copy commit fail`)
+        vscode.window.showErrorMessage(`Copy commit fail: not commit`)
       }
     }),
     vscode.commands.registerCommand(COM_CHECKOUT, (node: NodeItem) => {

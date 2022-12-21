@@ -3,7 +3,7 @@
 	"displayName": "File Git History",
 	"description": "View File History in SideMenu.",
 	"publisher": "saber2pr",
-	"version": "0.0.17",
+	"version": "0.0.18",
 	"engines": {
 		"vscode": "^1.56.0"
 	},

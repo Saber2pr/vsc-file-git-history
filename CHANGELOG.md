@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.18](https://github.com/Saber2pr/vsc-file-git-history/compare/v0.0.17...v0.0.18) (2022-12-21)
+
+
+### Bug Fixes
+
+* **#2:** copy noworking in codespace ([851db38](https://github.com/Saber2pr/vsc-file-git-history/commit/851db381e1bbd868e2e9607e0ba3edd4e31566ea)), closes [#2](https://github.com/Saber2pr/vsc-file-git-history/issues/2)
+
 ### [0.0.17](https://github.com/Saber2pr/vsc-file-git-history/compare/v0.0.16...v0.0.17) (2022-12-21)
 
 ### [0.0.16](https://github.com/Saber2pr/vsc-file-git-history/compare/v0.0.15...v0.0.16) (2022-12-21)

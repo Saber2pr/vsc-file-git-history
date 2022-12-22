@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.19](https://github.com/Saber2pr/vsc-file-git-history/compare/v0.0.18...v0.0.19) (2022-12-22)
+
+
+### Features
+
+* keep mute when copy success ([afe6386](https://github.com/Saber2pr/vsc-file-git-history/commit/afe638618fd67f050235bab4170feb3d5d91efe4))
+
 ### [0.0.18](https://github.com/Saber2pr/vsc-file-git-history/compare/v0.0.17...v0.0.18) (2022-12-21)
 
 

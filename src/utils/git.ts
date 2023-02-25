@@ -4,20 +4,21 @@ import { execShell } from './execShell'
 // git log --stat --pretty=oneline -- <file>
 /**
 
-bc4297314d50bb1d202379bf6413dd90bee03ccf chore: update
- ReadMe.todo | 78 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-----------
- 1 file changed, 67 insertions(+), 11 deletions(-)
-4617d7572221fd784bb60911e0207c257c568e34 Merge branch 'main' of https://github.com/Saber2pr/todo
-ca81748dfe3cad2a91aff46aff8c3c1677d3f93e chore: update
- ReadMe.todo | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+commit e9c563ec335f69568c3414ee4d35b3ea04dd2dcb
+Author: saber2pr <saber2pr@gmail.com>
+Date:   Mon Aug 29 10:16:47 2022 +0800
+
+    chore: update
+
+ README.md | 46 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 46 insertions(+)
 
  */
 export const getFileCommits = async (path: string): Promise<Commit[]> => {
   const str = await execShell('git', [
     'log',
     '--stat',
-    '--pretty=oneline',
+    '--pretty=medium',
     '--',
     resolve(path),
   ])
@@ -39,6 +40,9 @@ export interface Commit {
   insertions: number
   deletions: number
   isFirstCommit?: boolean
+  authorName: string
+  authorEmail: string
+  date: string
 }
 
 export const parseLog = (log: string) => {
@@ -48,8 +52,32 @@ export const parseLog = (log: string) => {
     if (!line.trim()) {
       continue
     }
-    if (/^ /.test(line)) {
-      const item = nodes.pop()
+
+    if (/^commit/.test(line)) {
+      nodes.push({} as any)
+    }
+
+    const item = nodes[nodes.length - 1]
+    if (!item) {
+      continue
+    }
+
+    if (/^commit/.test(line)) {
+      item.commit = line.split(' ')[1]
+    }
+    if (/^Author/.test(line)) {
+      const meta = line.split(' ')
+      item.authorName = meta[1]
+      item.authorEmail = meta[2].replace(/[<>]/g, '')
+    }
+    if (/^Date/.test(line)) {
+      const str = line.replace('Date:', '').trim()
+      item.date = str
+    }
+    if (/^ {4}/.test(line)) {
+      item.title = line.trim()
+    }
+    if (/^ {1}/.test(line)) {
       const ch = '|'
       if (line.includes(ch)) {
         const [file, desc] = line.split(ch)
@@ -94,19 +122,6 @@ export const parseLog = (log: string) => {
             : item.deletions
         }
       }
-      nodes.push(item)
-    } else {
-      const idx = line.indexOf(' ')
-      const title = line.slice(idx + 1)
-      nodes.push({
-        title,
-        commit: line.slice(0, idx),
-        changeFiles: null,
-        changes: null,
-        deletions: null,
-        insertions: null,
-        file: null,
-      })
     }
   }
   const first = nodes.pop()
@@ -116,6 +131,7 @@ export const parseLog = (log: string) => {
   }
   return nodes
 }
+
 // git diff <start>^..<end> -- <file>
 export const getFileCommitType = async (
   path: string,

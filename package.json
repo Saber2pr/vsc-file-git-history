@@ -93,5 +93,7 @@
 	"extensionDependencies": [
 		"mhutchie.git-graph"
 	],
-	"dependencies": {}
+	"dependencies": {
+		"moment": "^2.29.4"
+	}
 }

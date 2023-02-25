@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.20](https://github.com/Saber2pr/vsc-file-git-history/compare/v0.0.19...v0.0.20) (2023-02-25)
+
+
+### Features
+
+* **#4:** Display the commit timestamp ([49754a1](https://github.com/Saber2pr/vsc-file-git-history/commit/49754a1293b507bcb3716ac5542e3be36572f52f)), closes [#4](https://github.com/Saber2pr/vsc-file-git-history/issues/4)
+
 ### [0.0.19](https://github.com/Saber2pr/vsc-file-git-history/compare/v0.0.18...v0.0.19) (2022-12-22)
 
 

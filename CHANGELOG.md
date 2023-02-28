@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.21](https://github.com/Saber2pr/vsc-file-git-history/compare/v0.0.20...v0.0.21) (2023-02-28)
+
+
+### Bug Fixes
+
+* **#5:** hide commit id ([936577c](https://github.com/Saber2pr/vsc-file-git-history/commit/936577c87c3210e879250b8d2e7965dd35881d5c)), closes [#5](https://github.com/Saber2pr/vsc-file-git-history/issues/5)
+
 ### [0.0.20](https://github.com/Saber2pr/vsc-file-git-history/compare/v0.0.19...v0.0.20) (2023-02-25)
 
 

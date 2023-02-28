@@ -134,7 +134,7 @@ export class NodeItem extends vscode.TreeItem {
   ) {
     let title = `[${moment(new Date(commit.date)).format(
       'YYYY-MM-DD HH:mm:ss'
-    )}] ${commit.commit.slice(0, 7)}: ${commit.title}`
+    )}] ${commit.title}`
     const changes = []
     if (commit.insertions > 0) {
       changes.push(`+${commit.insertions}`)

@@ -67,11 +67,6 @@
 					"command": "file-git-history.openFile",
 					"group": "navigation",
 					"when": "view == file-git-history"
-				},
-				{
-					"command": "file-git-history.reload",
-					"group": "navigation",
-					"when": "view == file-git-history"
 				}
 			]
 		}

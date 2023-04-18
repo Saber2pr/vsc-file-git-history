@@ -145,6 +145,9 @@ export class NodeItem extends vscode.TreeItem {
     if (changes.length > 0) {
       title += ` ${changes.join('|')}`
     }
+    if(commit.authorName) {
+      title += ` - @${commit.authorName}`
+    }
     super(title, collapsibleState)
   }
 }

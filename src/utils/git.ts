@@ -20,7 +20,7 @@ export const getFileCommits = async (path: string): Promise<Commit[]> => {
     '--stat',
     '--pretty=medium',
     '--',
-    resolve(path),
+    `"${resolve(path)}"`,
   ])
   if (str) {
     return parseLog(str)

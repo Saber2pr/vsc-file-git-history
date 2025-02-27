@@ -1,5 +1,7 @@
 import { resolve } from 'path'
 import { execShell } from './execShell'
+import path from 'path'
+import fs from 'fs'
 
 // git log --stat --pretty=oneline -- <file>
 /**
@@ -157,3 +159,28 @@ export const getFileCommitType = async (
 }
 
 export type CommitType = 'new' | 'update' | 'deleted'
+
+export function findGitRepoDir(startPath: string) {
+  try {
+    const maxDepth = 100
+    let index = 0
+    let currentPath = startPath
+
+    while (currentPath !== path.parse(currentPath).root) {
+      const gitDir = path.join(currentPath, '.git')
+      if (fs.existsSync(gitDir)) {
+        return currentPath
+      }
+
+      index++
+      if (index > maxDepth) {
+        return null
+      }
+      currentPath = path.dirname(currentPath) // 上级目录
+    }
+
+    return null // 如果找不到.git目录，返回null
+  } catch (error) {
+    return startPath
+  }
+}

@@ -6,6 +6,7 @@ import { getArray } from './utils/getArray'
 import {
   Commit,
   CommitType,
+  findGitRepoDir,
   getFileCommits,
   getFileCommitType,
 } from './utils/git'
@@ -41,7 +42,11 @@ export class FileHistoryViewerProvider
 
   async getTreeItem(node: NodeItem): Promise<vscode.TreeItem> {
     const filePathAbs = this.getCurrentFilePath()
-    const repo = getRootPath()
+    const rootPath = getRootPath()
+    if (!rootPath) {
+      return
+    }
+    const repo = findGitRepoDir(rootPath)
     const filePath = filePathAbs.replace(repo, '').replace(/^(\\)|(\/)/, '')
 
     const nodeCommit = node.commit
@@ -145,7 +150,7 @@ export class NodeItem extends vscode.TreeItem {
     if (changes.length > 0) {
       title += ` ${changes.join('|')}`
     }
-    if(commit.authorName) {
+    if (commit.authorName) {
       title += ` - @${commit.authorName}`
     }
     super(title, collapsibleState)

@@ -10,6 +10,7 @@ import {
   FileHistoryViewerProvider,
   NodeItem,
 } from './FileHistoryViewerProvider'
+import { loopCheck } from './utils/checkDeps'
 import { COMMANDS } from './utils/commands'
 import { openFile } from './utils/editor'
 import { checkoutCommit } from './utils/git'
@@ -35,6 +36,9 @@ export function activate(context: vscode.ExtensionContext) {
       }
     }),
     TreeView,
+    TreeView.onDidChangeSelection(e => {
+      loopCheck()
+    }),
     vscode.window.onDidChangeActiveTextEditor(Provider.changeEditor),
     vscode.commands.registerCommand(COM_RELOAD, () => {
       vscode.commands.executeCommand(COMMANDS.reload)

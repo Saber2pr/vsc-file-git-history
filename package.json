@@ -85,9 +85,6 @@
 		"standard-version": "^9.3.1",
 		"typescript": "^4.4.4"
 	},
-	"extensionDependencies": [
-		"mhutchie.git-graph"
-	],
 	"dependencies": {
 		"moment": "^2.29.4"
 	}

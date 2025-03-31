@@ -94,7 +94,7 @@ export class FileHistoryViewerProvider
       return
     }
     const repo = findGitRepoDir(rootPath)
-    const filePath = filePathAbs.replace(repo, '').replace(/^(\\)|(\/)/, '')
+    const filePath = filePathAbs.replace(repo, '').replace(/^((\\)|(\/))/, '')
 
     const nodeCommit = node.commit
     const commit = nodeCommit.commit

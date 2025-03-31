@@ -1,4 +1,3 @@
-import { resolve } from 'path'
 import path from 'path'
 import fs from 'fs'
 import { runCmdV2 } from './shellV2'
@@ -21,10 +20,7 @@ export const getFileCommits = async (
   cwd: string,
   path: string
 ): Promise<Commit[]> => {
-  const res = await runCmdV2(
-    cwd,
-    `git log --stat --pretty=medium -- "${resolve(path)}"`
-  )
+  const res = await runCmdV2(cwd, `git log --stat --pretty=medium -- "${path}"`)
   if (res?.output) {
     return parseLog(res?.output)
   }
@@ -142,10 +138,7 @@ export const getFileCommitType = async (
   commit: string
 ): Promise<CommitType> => {
   try {
-    const res = await runCmdV2(
-      cwd,
-      `git diff ${commit}^..${commit} -- ${resolve(path)}`
-    )
+    const res = await runCmdV2(cwd, `git diff ${commit}^..${commit} -- ${path}`)
     const str = res?.output
     if (str) {
       if (/new file mode/.test(str)) {

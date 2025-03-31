@@ -32,10 +32,12 @@ export class FileHistoryViewerProvider
       }
       try {
         queryObj = JSON.parse(str)
-      } catch (error) {}
+      } catch (error) {
+        console.log('error', error)
+      }
 
-      if (queryObj?.repo && queryObj?.filePath) {
-        return join(queryObj?.repo, queryObj?.filePath)
+      if (queryObj?.filePath) {
+        return queryObj?.filePath
       }
     }
     return document?.fileName
@@ -78,7 +80,10 @@ export class FileHistoryViewerProvider
       return []
     }
 
-    const commits = await getFileCommits(fileName)
+    const rootPath = getRootPath()
+    const repo = findGitRepoDir(rootPath)
+
+    const commits = await getFileCommits(repo, fileName)
     return commits
   }
 

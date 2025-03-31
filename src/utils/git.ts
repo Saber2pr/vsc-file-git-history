@@ -2,6 +2,7 @@ import { resolve } from 'path'
 import { execShell } from './execShell'
 import path from 'path'
 import fs from 'fs'
+import { runCmdV2 } from './shellV2'
 
 // git log --stat --pretty=oneline -- <file>
 /**
@@ -16,16 +17,16 @@ Date:   Mon Aug 29 10:16:47 2022 +0800
  1 file changed, 46 insertions(+)
 
  */
-export const getFileCommits = async (path: string): Promise<Commit[]> => {
-  const str = await execShell('git', [
-    'log',
-    '--stat',
-    '--pretty=medium',
-    '--',
-    `"${resolve(path)}"`,
-  ])
-  if (str) {
-    return parseLog(str)
+export const getFileCommits = async (
+  cwd: string,
+  path: string
+): Promise<Commit[]> => {
+  const res = await runCmdV2(
+    cwd,
+    `git log --stat --pretty=medium -- "${resolve(path)}"`
+  )
+  if (res?.output) {
+    return parseLog(res?.output)
   }
 }
 

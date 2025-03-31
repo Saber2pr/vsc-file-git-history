@@ -1,5 +1,5 @@
 import { getRootPath } from './utils/getRootPath'
-import { parse } from 'path'
+import { join, parse } from 'path'
 import * as vscode from 'vscode'
 import { encodeDiffDocUri, getPathFromStr } from './utils/encodeDiffDocUri'
 import { getArray } from './utils/getArray'
@@ -20,24 +20,66 @@ export class FileHistoryViewerProvider
     this.textEditor = vscode.window.activeTextEditor
   }
 
+  parseDocPath(document: vscode.TextDocument) {
+    const query = document?.uri?.query
+    if (query) {
+      const str = Buffer.from(query, 'base64').toString('utf8')
+      let queryObj = {} as {
+        filePath: string
+        commit: string
+        repo: string
+        exists: boolean
+      }
+      try {
+        queryObj = JSON.parse(str)
+      } catch (error) {}
+
+      if (queryObj?.repo && queryObj?.filePath) {
+        return join(queryObj?.repo, queryObj?.filePath)
+      }
+    }
+    return document?.fileName
+  }
+
   getCurrentFilePath() {
     if (this.textEditor) {
       const document = this.textEditor.document
-      return document?.fileName
+      return this.parseDocPath(document)
     }
   }
+
+  showTime = true
 
   async getChildren(node?: NodeItem): Promise<NodeItem[]> {
     if (this.textEditor) {
       const file = this.getCurrentFilePath()
-      const commits = await getFileCommits(file)
+      const commits = await this.getCommitList(file)
       return getArray(commits).map(
         commit =>
-          new NodeItem(file, commit, vscode.TreeItemCollapsibleState.None)
+          new NodeItem(
+            file,
+            commit,
+            vscode.TreeItemCollapsibleState.None,
+            this.showTime
+          )
       )
     } else {
       return []
     }
+  }
+
+  async getCommitList(fileName: string) {
+    // if is diff, skip reset
+    const isDiff =
+      fileName &&
+      (fileName.startsWith('\\file') || fileName.startsWith('/file'))
+
+    if (isDiff) {
+      return []
+    }
+
+    const commits = await getFileCommits(fileName)
+    return commits
   }
 
   async getTreeItem(node: NodeItem): Promise<vscode.TreeItem> {
@@ -113,20 +155,29 @@ export class FileHistoryViewerProvider
   readonly onDidChangeTreeData: vscode.Event<void> =
     this._onDidChangeTreeData.event
 
-  changeEditor = (textEditor?: vscode.TextEditor) => {
+  changeEditor = (textEditor?: vscode.TextEditor, showTime = true) => {
     if (textEditor) {
-      const fileName = textEditor.document?.fileName
+      const fileName = this.parseDocPath(textEditor.document)
+      this.showTime = showTime
 
       // if is diff, skip reset
-      if (
+      const isDiff =
         fileName &&
         (fileName.startsWith('\\file') || fileName.startsWith('/file'))
-      ) {
+
+      if (isDiff) {
         return
       }
+
       this.textEditor = textEditor
       this._onDidChangeTreeData.fire()
     }
+  }
+
+  reloadEditor = (textEditor?: vscode.TextEditor, showTime = true) => {
+    this.showTime = showTime
+    this.textEditor = textEditor
+    this._onDidChangeTreeData.fire()
   }
 }
 
@@ -135,11 +186,19 @@ export class NodeItem extends vscode.TreeItem {
     public readonly originFile: string,
     public readonly commit: Commit,
     public readonly collapsibleState: vscode.TreeItemCollapsibleState = vscode
-      .TreeItemCollapsibleState.Collapsed
+      .TreeItemCollapsibleState.Collapsed,
+    showTime: boolean
   ) {
-    let title = `[${moment(new Date(commit.date)).format(
-      'YYYY-MM-DD HH:mm:ss'
-    )}] ${commit.title}`
+    let title = `${commit.title}`
+
+    if (showTime) {
+      title = `[${moment(new Date(commit.date)).format(
+        'YYYY-MM-DD HH:mm:ss'
+      )}] ${commit.title}`
+    } else {
+      title = `${commit.title}`
+    }
+
     const changes = []
     if (commit.insertions > 0) {
       changes.push(`+${commit.insertions}`)

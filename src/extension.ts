@@ -3,21 +3,30 @@ import * as vscode from 'vscode'
 import {
   COM_CHECKOUT,
   COM_COPY_COMMIT,
+  COM_HIDE_TIME,
   COM_OPEN_FILE,
   COM_RELOAD,
+  COM_SHOW_TIME,
+  CONFIG_KEY_SHOWTIME,
 } from './constants'
 import {
   FileHistoryViewerProvider,
   NodeItem,
 } from './FileHistoryViewerProvider'
 import { loopCheck } from './utils/checkDeps'
-import { COMMANDS } from './utils/commands'
 import { openFile } from './utils/editor'
 import { checkoutCommit } from './utils/git'
+import { getContext, setContext } from './utils/setContext'
 
 // install
 export function activate(context: vscode.ExtensionContext) {
   const Provider = new FileHistoryViewerProvider()
+
+  const refresh = (activeTextEditor = vscode.window.activeTextEditor) =>
+    getContext(CONFIG_KEY_SHOWTIME).then(res => {
+      Provider.reloadEditor(activeTextEditor, res === 'on' ? false : true)
+    })
+  refresh()
 
   const TreeView = vscode.window.createTreeView('file-git-history', {
     treeDataProvider: Provider,
@@ -39,9 +48,25 @@ export function activate(context: vscode.ExtensionContext) {
     TreeView.onDidChangeSelection(e => {
       loopCheck()
     }),
-    vscode.window.onDidChangeActiveTextEditor(Provider.changeEditor),
-    vscode.commands.registerCommand(COM_RELOAD, () => {
-      vscode.commands.executeCommand(COMMANDS.reload)
+    vscode.window.onDidChangeActiveTextEditor(editor => {
+      getContext(CONFIG_KEY_SHOWTIME).then(res => {
+        Provider.changeEditor(editor, res === 'on' ? false : true)
+      })
+    }),
+    vscode.commands.registerCommand(COM_RELOAD, refresh),
+    vscode.commands.registerCommand(COM_SHOW_TIME, () => {
+      const activeTextEditor = vscode.window.activeTextEditor
+      if (activeTextEditor) {
+        setContext(CONFIG_KEY_SHOWTIME, 'off')
+        Provider.reloadEditor(activeTextEditor, true)
+      }
+    }),
+    vscode.commands.registerCommand(COM_HIDE_TIME, () => {
+      const activeTextEditor = vscode.window.activeTextEditor
+      if (activeTextEditor) {
+        setContext(CONFIG_KEY_SHOWTIME, 'on')
+        Provider.reloadEditor(activeTextEditor, false)
+      }
     }),
     vscode.commands.registerCommand(COM_COPY_COMMIT, async (node: NodeItem) => {
       const commit = node?.commit?.commit

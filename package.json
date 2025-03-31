@@ -40,6 +40,16 @@
 				"title": "Reload",
 				"command": "file-git-history.reload",
 				"icon": "$(refresh)"
+			},
+			{
+				"title": "Switch Show Time",
+				"command": "file-git-history.showTitleTime",
+				"icon": "$(eye)"
+			},
+			{
+				"title": "Switch Hide Time",
+				"command": "file-git-history.hideTitleTime",
+				"icon": "$(eye-closed)"
 			}
 		],
 		"views": {
@@ -67,6 +77,16 @@
 					"command": "file-git-history.openFile",
 					"group": "navigation",
 					"when": "view == file-git-history"
+				},
+				{
+					"command": "file-git-history.showTitleTime",
+					"group": "navigation",
+					"when": "view == file-git-history && file-git-history.show-time == 'on'"
+				},
+				{
+					"command": "file-git-history.hideTitleTime",
+					"group": "navigation",
+					"when": "view == file-git-history && file-git-history.show-time == 'off'"
 				}
 			]
 		}
@@ -80,12 +100,14 @@
 	},
 	"devDependencies": {
 		"@types/copy-paste": "^1.1.30",
-		"@types/node": "^12.11.7",
+		"@types/fs-extra": "^11.0.4",
+		"@types/node": "^22.13.14",
 		"@types/vscode": "^1.56.0",
 		"standard-version": "^9.3.1",
 		"typescript": "^4.4.4"
 	},
 	"dependencies": {
+		"fs-extra": "^11.3.0",
 		"moment": "^2.29.4"
 	}
 }

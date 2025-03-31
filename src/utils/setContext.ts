@@ -15,7 +15,10 @@ export const setContext = async (key: string, value: string) => {
 
 export const getContext = async (key: string) => {
   try {
-    const value = await rc.get(key)
+    let value = await rc.get(key)
+    if (!value) {
+      value = 'off'
+    }
     await commands.executeCommand('setContext', key, value)
     return value
   } catch (error) {

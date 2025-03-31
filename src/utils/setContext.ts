@@ -1,6 +1,6 @@
 import { commands } from 'vscode'
 import { RCManager } from '../store/rc'
-import { CONFIG_PATH } from '../constants'
+import { CONFIG_KEY_SHOWTIME, CONFIG_PATH } from '../constants'
 
 const rc = new RCManager(CONFIG_PATH)
 
@@ -16,7 +16,7 @@ export const setContext = async (key: string, value: string) => {
 export const getContext = async (key: string) => {
   try {
     let value = await rc.get(key)
-    if (!value) {
+    if (!value && key === CONFIG_KEY_SHOWTIME) {
       value = 'off'
     }
     await commands.executeCommand('setContext', key, value)

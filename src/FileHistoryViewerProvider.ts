@@ -72,7 +72,6 @@ export class FileHistoryViewerProvider
   }
 
   async getCommitList(fileName: string) {
-    console.log('🚀 ~ FileHistoryViewerProvider ~ fileName:', fileName)
     // if is diff, skip reset
     const isDiff =
       fileName &&
@@ -85,7 +84,6 @@ export class FileHistoryViewerProvider
     const repo = getRepoCwd()
 
     const commits = await getFileCommits(repo, fileName)
-    console.log('🚀 ~ FileHistoryViewerProvider ~ commits:', commits)
     return commits
   }
 

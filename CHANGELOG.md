@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.28](https://github.com/Saber2pr/vsc-file-git-history/compare/v0.0.27...v0.0.28) (2025-03-31)
+
+
+### Features
+
+* **#11:** add switch time show button ([1b714f8](https://github.com/Saber2pr/vsc-file-git-history/commit/1b714f8dabc654f8e268744bf8f37a3c82609d8f)), closes [#11](https://github.com/Saber2pr/vsc-file-git-history/issues/11)
+
 ### [0.0.27](https://github.com/Saber2pr/vsc-file-git-history/compare/v0.0.26...v0.0.27) (2025-03-11)
 
 

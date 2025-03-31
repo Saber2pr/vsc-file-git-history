@@ -9,6 +9,7 @@ import {
   findGitRepoDir,
   getFileCommits,
   getFileCommitType,
+  getRepoCwd,
 } from './utils/git'
 import moment from 'moment'
 
@@ -71,6 +72,7 @@ export class FileHistoryViewerProvider
   }
 
   async getCommitList(fileName: string) {
+    console.log('🚀 ~ FileHistoryViewerProvider ~ fileName:', fileName)
     // if is diff, skip reset
     const isDiff =
       fileName &&
@@ -80,10 +82,10 @@ export class FileHistoryViewerProvider
       return []
     }
 
-    const rootPath = getRootPath()
-    const repo = findGitRepoDir(rootPath)
+    const repo = getRepoCwd()
 
     const commits = await getFileCommits(repo, fileName)
+    console.log('🚀 ~ FileHistoryViewerProvider ~ commits:', commits)
     return commits
   }
 
@@ -105,7 +107,7 @@ export class FileHistoryViewerProvider
     if (isFirstCommit) {
       commitType = 'new'
     } else {
-      commitType = await getFileCommitType(filePathAbs, commit)
+      commitType = await getFileCommitType(repo, filePathAbs, commit)
     }
 
     const isUpdateCommit = commitType === 'update'
@@ -180,9 +182,11 @@ export class FileHistoryViewerProvider
   }
 
   reloadEditor = (textEditor?: vscode.TextEditor, showTime = true) => {
-    this.showTime = showTime
-    this.textEditor = textEditor
-    this._onDidChangeTreeData.fire()
+    if (textEditor) {
+      this.showTime = showTime
+      this.textEditor = textEditor
+      this._onDidChangeTreeData.fire()
+    }
   }
 }
 

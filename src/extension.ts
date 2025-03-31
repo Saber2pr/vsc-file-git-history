@@ -15,7 +15,7 @@ import {
 } from './FileHistoryViewerProvider'
 import { loopCheck } from './utils/checkDeps'
 import { openFile } from './utils/editor'
-import { checkoutCommit } from './utils/git'
+import { checkoutCommit, getRepoCwd } from './utils/git'
 import { getContext, setContext } from './utils/setContext'
 
 // install
@@ -90,7 +90,7 @@ export function activate(context: vscode.ExtensionContext) {
           async progress => {
             progress.report({ increment: 0 })
             try {
-              await checkoutCommit(commit)
+              await checkoutCommit(getRepoCwd(), commit)
             } catch (error) {
               console.log(error)
               if (/err/.test(error)) {

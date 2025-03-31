@@ -1,8 +1,8 @@
 import { resolve } from 'path'
-import { execShell } from './execShell'
 import path from 'path'
 import fs from 'fs'
 import { runCmdV2 } from './shellV2'
+import { getRootPath } from './getRootPath'
 
 // git log --stat --pretty=oneline -- <file>
 /**
@@ -30,8 +30,8 @@ export const getFileCommits = async (
   }
 }
 
-export const checkoutCommit = async (commit: string) => {
-  return await execShell('git', ['checkout', commit])
+export const checkoutCommit = async (cwd: string, commit: string) => {
+  return await runCmdV2(cwd, `git checkout ${commit}`)
 }
 
 export interface Commit {
@@ -137,16 +137,16 @@ export const parseLog = (log: string) => {
 
 // git diff <start>^..<end> -- <file>
 export const getFileCommitType = async (
+  cwd: string,
   path: string,
   commit: string
 ): Promise<CommitType> => {
   try {
-    const str = await execShell('git', [
-      'diff',
-      `${commit}^..${commit}`,
-      '--',
-      resolve(path),
-    ])
+    const res = await runCmdV2(
+      cwd,
+      `git diff ${commit}^..${commit} -- ${resolve(path)}`
+    )
+    const str = res?.output
     if (str) {
       if (/new file mode/.test(str)) {
         return 'new'
@@ -184,4 +184,10 @@ export function findGitRepoDir(startPath: string) {
   } catch (error) {
     return startPath
   }
+}
+
+export const getRepoCwd = () => {
+  const rootPath = getRootPath()
+  const repo = findGitRepoDir(rootPath)
+  return repo
 }

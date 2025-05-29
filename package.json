@@ -50,6 +50,16 @@
 				"title": "Switch Hide Time",
 				"command": "file-git-history.hideTitleTime",
 				"icon": "$(eye-closed)"
+			},
+			{
+				"title": "Switch Show Auth",
+				"command": "file-git-history.showAuth",
+				"icon": "$(person-add)"
+			},
+			{
+				"title": "Switch Hide Auth",
+				"command": "file-git-history.hideAuth",
+				"icon": "$(person)"
 			}
 		],
 		"views": {
@@ -75,18 +85,28 @@
 			"view/title": [
 				{
 					"command": "file-git-history.openFile",
-					"group": "navigation",
+					"group": "navigation@1",
 					"when": "view == file-git-history"
 				},
 				{
 					"command": "file-git-history.showTitleTime",
-					"group": "navigation",
+					"group": "navigation@2",
 					"when": "view == file-git-history && file-git-history.show-time == 'on'"
 				},
 				{
 					"command": "file-git-history.hideTitleTime",
-					"group": "navigation",
+					"group": "navigation@2",
 					"when": "view == file-git-history && file-git-history.show-time == 'off'"
+				},
+				{
+					"command": "file-git-history.showAuth",
+					"group": "navigation@3",
+					"when": "view == file-git-history && file-git-history.show-auth == 'on'"
+				},
+				{
+					"command": "file-git-history.hideAuth",
+					"group": "navigation@3",
+					"when": "view == file-git-history && file-git-history.show-auth == 'off'"
 				}
 			]
 		}

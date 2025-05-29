@@ -52,6 +52,7 @@ export class FileHistoryViewerProvider
   }
 
   showTime = true
+  showAuth = true
 
   async getChildren(node?: NodeItem): Promise<NodeItem[]> {
     if (this.textEditor) {
@@ -63,7 +64,8 @@ export class FileHistoryViewerProvider
             file,
             commit,
             vscode.TreeItemCollapsibleState.None,
-            this.showTime
+            this.showTime,
+            this.showAuth
           )
       )
     } else {
@@ -160,10 +162,20 @@ export class FileHistoryViewerProvider
   readonly onDidChangeTreeData: vscode.Event<void> =
     this._onDidChangeTreeData.event
 
-  changeEditor = (textEditor?: vscode.TextEditor, showTime = true) => {
+  changeEditor = (
+    textEditor?: vscode.TextEditor,
+    {
+      showTime = this.showTime,
+      showAuth = this.showAuth,
+    }: { showTime?: boolean; showAuth?: boolean } = {
+      showTime: this.showTime,
+      showAuth: this.showAuth,
+    }
+  ) => {
     if (textEditor) {
       const fileName = this.parseDocPath(textEditor.document)
       this.showTime = showTime
+      this.showAuth = showAuth
 
       // if is diff, skip reset
       const isDiff =
@@ -179,9 +191,19 @@ export class FileHistoryViewerProvider
     }
   }
 
-  reloadEditor = (textEditor?: vscode.TextEditor, showTime = true) => {
+  reloadEditor = (
+    textEditor?: vscode.TextEditor,
+    {
+      showTime = this.showTime,
+      showAuth = this.showAuth,
+    }: { showTime?: boolean; showAuth?: boolean } = {
+      showTime: this.showTime,
+      showAuth: this.showAuth,
+    }
+  ) => {
     if (textEditor) {
       this.showTime = showTime
+      this.showAuth = showAuth
       this.textEditor = textEditor
       this._onDidChangeTreeData.fire()
     }
@@ -194,7 +216,8 @@ export class NodeItem extends vscode.TreeItem {
     public readonly commit: Commit,
     public readonly collapsibleState: vscode.TreeItemCollapsibleState = vscode
       .TreeItemCollapsibleState.Collapsed,
-    showTime: boolean
+    showTime: boolean,
+    showAuth: boolean
   ) {
     let title = `${commit.title}`
 
@@ -216,9 +239,11 @@ export class NodeItem extends vscode.TreeItem {
     if (changes.length > 0) {
       title += ` ${changes.join('|')}`
     }
-    if (commit.authorName) {
-      title += ` - @${commit.authorName}`
+
+    if (showAuth) {
+      title = `@${commit.authorName} ${title}`
     }
+
     super(title, collapsibleState)
   }
 }

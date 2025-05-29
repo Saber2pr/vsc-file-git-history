@@ -8,6 +8,9 @@ import {
   COM_RELOAD,
   COM_SHOW_TIME,
   CONFIG_KEY_SHOWTIME,
+  CONFIG_KEY_SHOWAUTH,
+  COM_SHOW_AUTH,
+  COM_HIDE_AUTH,
 } from './constants'
 import {
   FileHistoryViewerProvider,
@@ -16,16 +19,22 @@ import {
 import { loopCheck } from './utils/checkDeps'
 import { openFile } from './utils/editor'
 import { checkoutCommit, getRepoCwd } from './utils/git'
-import { getContext, setContext } from './utils/setContext'
+import { getContext, getContexts, setContext } from './utils/setContext'
 
 // install
 export function activate(context: vscode.ExtensionContext) {
   const Provider = new FileHistoryViewerProvider()
 
-  const refresh = (activeTextEditor = vscode.window.activeTextEditor) =>
-    getContext(CONFIG_KEY_SHOWTIME).then(res => {
-      Provider.reloadEditor(activeTextEditor, res === 'on' ? false : true)
-    })
+  const refresh = (activeTextEditor = vscode.window.activeTextEditor) => {
+    getContexts(CONFIG_KEY_SHOWTIME, CONFIG_KEY_SHOWAUTH).then(
+      ([showTime, showAuth]) => {
+        Provider.reloadEditor(activeTextEditor, {
+          showTime: showTime === 'on' ? false : true,
+          showAuth: showAuth === 'on' ? false : true,
+        })
+      }
+    )
+  }
   refresh()
 
   const TreeView = vscode.window.createTreeView('file-git-history', {
@@ -49,23 +58,50 @@ export function activate(context: vscode.ExtensionContext) {
       loopCheck()
     }),
     vscode.window.onDidChangeActiveTextEditor(editor => {
-      getContext(CONFIG_KEY_SHOWTIME).then(res => {
-        Provider.changeEditor(editor, res === 'on' ? false : true)
-      })
+      getContexts(CONFIG_KEY_SHOWTIME, CONFIG_KEY_SHOWAUTH).then(
+        ([showTime, showAuth]) => {
+          Provider.changeEditor(editor, {
+            showTime: showTime === 'on' ? false : true,
+            showAuth: showAuth === 'on' ? false : true,
+          })
+        }
+      )
     }),
     vscode.commands.registerCommand(COM_RELOAD, refresh),
     vscode.commands.registerCommand(COM_SHOW_TIME, () => {
       const activeTextEditor = vscode.window.activeTextEditor
       if (activeTextEditor) {
         setContext(CONFIG_KEY_SHOWTIME, 'off')
-        Provider.reloadEditor(activeTextEditor, true)
+        Provider.reloadEditor(activeTextEditor, {
+          showTime: true,
+        })
       }
     }),
     vscode.commands.registerCommand(COM_HIDE_TIME, () => {
       const activeTextEditor = vscode.window.activeTextEditor
       if (activeTextEditor) {
         setContext(CONFIG_KEY_SHOWTIME, 'on')
-        Provider.reloadEditor(activeTextEditor, false)
+        Provider.reloadEditor(activeTextEditor, {
+          showTime: false,
+        })
+      }
+    }),
+    vscode.commands.registerCommand(COM_SHOW_AUTH, () => {
+      const activeTextEditor = vscode.window.activeTextEditor
+      if (activeTextEditor) {
+        setContext(CONFIG_KEY_SHOWAUTH, 'off')
+        Provider.reloadEditor(activeTextEditor, {
+          showAuth: true,
+        })
+      }
+    }),
+    vscode.commands.registerCommand(COM_HIDE_AUTH, () => {
+      const activeTextEditor = vscode.window.activeTextEditor
+      if (activeTextEditor) {
+        setContext(CONFIG_KEY_SHOWAUTH, 'on')
+        Provider.reloadEditor(activeTextEditor, {
+          showAuth: false,
+        })
       }
     }),
     vscode.commands.registerCommand(COM_COPY_COMMIT, async (node: NodeItem) => {

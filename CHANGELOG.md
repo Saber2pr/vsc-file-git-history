@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.32](https://github.com/Saber2pr/vsc-file-git-history/compare/v0.0.31...v0.0.32) (2025-05-29)
+
+
+### Features
+
+* **#12:** Add toggled author info in history list ([b566c32](https://github.com/Saber2pr/vsc-file-git-history/commit/b566c3292e55a576b134839c5eed9bfac8dfbf02)), closes [#12](https://github.com/Saber2pr/vsc-file-git-history/issues/12)
+
 ### [0.0.31](https://github.com/Saber2pr/vsc-file-git-history/compare/v0.0.30...v0.0.31) (2025-03-31)
 
 

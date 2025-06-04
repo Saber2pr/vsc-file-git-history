@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.33](https://github.com/Saber2pr/vsc-file-git-history/compare/v0.0.32...v0.0.33) (2025-06-04)
+
+
+### Features
+
+* **#13:** Add Search(filter by string match) bar for history. ([661c7ff](https://github.com/Saber2pr/vsc-file-git-history/commit/661c7ffec90c34660ae15703d92b4177222f1028)), closes [#13](https://github.com/Saber2pr/vsc-file-git-history/issues/13)
+
 ### [0.0.32](https://github.com/Saber2pr/vsc-file-git-history/compare/v0.0.31...v0.0.32) (2025-05-29)
 
 

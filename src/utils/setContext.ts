@@ -8,6 +8,14 @@ import {
 
 const rc = new RCManager(CONFIG_PATH)
 
+export const setContextOnly = async (key: string, value: string) => {
+  try {
+    await commands.executeCommand('setContext', key, value)
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 export const setContext = async (key: string, value: string) => {
   try {
     await commands.executeCommand('setContext', key, value)

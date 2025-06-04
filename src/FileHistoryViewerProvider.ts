@@ -1,8 +1,10 @@
-import { getRootPath } from './utils/getRootPath'
+import moment from 'moment'
 import { join, parse } from 'path'
 import * as vscode from 'vscode'
+
 import { encodeDiffDocUri, getPathFromStr } from './utils/encodeDiffDocUri'
 import { getArray } from './utils/getArray'
+import { getRootPath } from './utils/getRootPath'
 import {
   Commit,
   CommitType,
@@ -11,7 +13,8 @@ import {
   getFileCommitType,
   getRepoCwd,
 } from './utils/git'
-import moment from 'moment'
+import { setContextOnly } from './utils/setContext'
+import { CONFIG_KEY_HASFILTER } from './constants'
 
 export class FileHistoryViewerProvider
   implements vscode.TreeDataProvider<NodeItem>
@@ -38,7 +41,8 @@ export class FileHistoryViewerProvider
       }
 
       if (queryObj?.filePath) {
-        return queryObj?.filePath
+        const repoCwd = getRepoCwd()
+        return join(repoCwd, queryObj?.filePath)
       }
     }
     return document?.fileName
@@ -53,21 +57,38 @@ export class FileHistoryViewerProvider
 
   showTime = true
   showAuth = true
+  private filterMap = new Map<string, string>()
 
   async getChildren(node?: NodeItem): Promise<NodeItem[]> {
     if (this.textEditor) {
       const file = this.getCurrentFilePath()
       const commits = await this.getCommitList(file)
-      return getArray(commits).map(
-        commit =>
-          new NodeItem(
-            file,
-            commit,
-            vscode.TreeItemCollapsibleState.None,
-            this.showTime,
-            this.showAuth
-          )
-      )
+      return getArray(commits)
+        .map(
+          commit =>
+            new NodeItem(
+              file,
+              commit,
+              vscode.TreeItemCollapsibleState.None,
+              this.showTime,
+              this.showAuth
+            )
+        )
+        .filter(item => {
+          const filter = this.filterMap.get(file)
+          if (
+            item.label &&
+            filter &&
+            typeof item.label === 'string' &&
+            typeof filter === 'string'
+          ) {
+            setContextOnly(CONFIG_KEY_HASFILTER, 'on')
+            return item.label.toLowerCase().includes(filter.toLowerCase())
+          } else {
+            setContextOnly(CONFIG_KEY_HASFILTER, 'off')
+          }
+          return true
+        })
     } else {
       return []
     }
@@ -189,6 +210,14 @@ export class FileHistoryViewerProvider
       this.textEditor = textEditor
       this._onDidChangeTreeData.fire()
     }
+  }
+
+  setFilter(filter: string) {
+    const file = this.getCurrentFilePath()
+    if (file) {
+      this.filterMap.set(file, filter)
+    }
+    this._onDidChangeTreeData.fire()
   }
 
   reloadEditor = (

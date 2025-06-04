@@ -1,6 +1,7 @@
 export const CONFIG_PATH = '.file-git-history-config.json'
 export const CONFIG_KEY_SHOWTIME = 'file-git-history.show-time'
 export const CONFIG_KEY_SHOWAUTH = 'file-git-history.show-auth'
+export const CONFIG_KEY_HASFILTER = 'file-git-history.hasFilter'
 
 export const COM_CHECKOUT = 'file-git-history.checkout'
 export const COM_COPY_COMMIT = 'file-git-history.copy-commit'
@@ -11,3 +12,5 @@ export const COM_HIDE_TIME = 'file-git-history.hideTitleTime'
 
 export const COM_SHOW_AUTH = 'file-git-history.showAuth'
 export const COM_HIDE_AUTH = 'file-git-history.hideAuth'
+export const COM_FILTER = 'file-git-history.filter'
+export const COM_FILTER_CLEAR = 'file-git-history.filterClear'

@@ -60,6 +60,16 @@
 				"title": "Switch Hide Auth",
 				"command": "file-git-history.hideAuth",
 				"icon": "$(person)"
+			},
+			{
+				"command": "file-git-history.filter",
+				"title": "Filter file git history",
+				"icon": "$(filter)"
+			},
+			{
+				"command": "file-git-history.filterClear",
+				"title": "Clear filter file git history",
+				"icon": "$(filter-filled)"
 			}
 		],
 		"views": {
@@ -84,18 +94,28 @@
 			],
 			"view/title": [
 				{
-					"command": "file-git-history.openFile",
+					"command": "file-git-history.filter",
 					"group": "navigation@1",
+					"when": "view == file-git-history && file-git-history.hasFilter != 'on'"
+				},
+				{
+					"command": "file-git-history.filterClear",
+					"group": "navigation@1",
+					"when": "view == file-git-history && file-git-history.hasFilter == 'on'"
+				},
+				{
+					"command": "file-git-history.openFile",
+					"group": "navigation@2",
 					"when": "view == file-git-history"
 				},
 				{
 					"command": "file-git-history.showTitleTime",
-					"group": "navigation@2",
+					"group": "navigation@3",
 					"when": "view == file-git-history && file-git-history.show-time == 'on'"
 				},
 				{
 					"command": "file-git-history.hideTitleTime",
-					"group": "navigation@2",
+					"group": "navigation@3",
 					"when": "view == file-git-history && file-git-history.show-time == 'off'"
 				},
 				{
@@ -128,6 +148,7 @@
 	},
 	"dependencies": {
 		"fs-extra": "^11.3.0",
+		"lodash": "^4.17.21",
 		"moment": "^2.29.4"
 	}
 }

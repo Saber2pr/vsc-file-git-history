@@ -11,6 +11,9 @@ import {
   CONFIG_KEY_SHOWAUTH,
   COM_SHOW_AUTH,
   COM_HIDE_AUTH,
+  COM_FILTER,
+  COM_FILTER_CLEAR,
+  CONFIG_KEY_HASFILTER,
 } from './constants'
 import {
   FileHistoryViewerProvider,
@@ -19,7 +22,13 @@ import {
 import { loopCheck } from './utils/checkDeps'
 import { openFile } from './utils/editor'
 import { checkoutCommit, getRepoCwd } from './utils/git'
-import { getContext, getContexts, setContext } from './utils/setContext'
+import _debounce from 'lodash/debounce'
+import {
+  getContext,
+  getContexts,
+  setContext,
+  setContextOnly,
+} from './utils/setContext'
 
 // install
 export function activate(context: vscode.ExtensionContext) {
@@ -41,6 +50,40 @@ export function activate(context: vscode.ExtensionContext) {
     treeDataProvider: Provider,
   })
   context.subscriptions.push(
+    vscode.commands.registerCommand(COM_FILTER, () => {
+      const quickPick = vscode.window.createQuickPick()
+      quickPick.placeholder = 'Input keyword to filter file git history...'
+      quickPick.matchOnDescription = false
+      quickPick.matchOnDetail = false
+
+      let confirmed = false
+      quickPick.onDidChangeValue(value => {
+        _debounce(() => Provider.setFilter(value))()
+      })
+
+      quickPick.onDidAccept(() => {
+        confirmed = true
+        quickPick.hide()
+
+        if (quickPick.value) {
+          setContextOnly(CONFIG_KEY_HASFILTER, 'on')
+        }
+      })
+
+      quickPick.onDidHide(() => {
+        if (!confirmed) {
+          Provider.setFilter('')
+          setContextOnly(CONFIG_KEY_HASFILTER, 'off')
+        }
+        quickPick.dispose()
+      })
+
+      quickPick.show()
+    }),
+    vscode.commands.registerCommand(COM_FILTER_CLEAR, () => {
+      Provider.setFilter('')
+      setContextOnly(CONFIG_KEY_HASFILTER, 'off')
+    }),
     vscode.commands.registerCommand(COM_OPEN_FILE, async () => {
       const filePath = Provider.getCurrentFilePath()
       try {

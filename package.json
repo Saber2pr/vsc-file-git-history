@@ -120,12 +120,12 @@
 				},
 				{
 					"command": "file-git-history.showAuth",
-					"group": "navigation@3",
+					"group": "navigation@4",
 					"when": "view == file-git-history && file-git-history.show-auth == 'on'"
 				},
 				{
 					"command": "file-git-history.hideAuth",
-					"group": "navigation@3",
+					"group": "navigation@4",
 					"when": "view == file-git-history && file-git-history.show-auth == 'off'"
 				}
 			]

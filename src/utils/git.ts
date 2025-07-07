@@ -74,7 +74,8 @@ export const parseLog = (log: string) => {
       item.date = str
     }
     if (/^ {4}/.test(line)) {
-      item.title = line.trim()
+      const title = item.title
+      item.title = title ? title + '\n' + line.trim() : line.trim()
     }
     if (/^ {1}/.test(line)) {
       const ch = '|'

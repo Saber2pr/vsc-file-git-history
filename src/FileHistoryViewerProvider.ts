@@ -249,8 +249,12 @@ export class NodeItem extends vscode.TreeItem {
     showAuth: boolean
   ) {
     let title = `${commit.title}`
+    const isMultiLine = commit.title.includes('\n')
 
     if (showTime) {
+      if (isMultiLine && !commit.title.startsWith('\n')) {
+        commit.title = `\n${commit.title}`
+      }
       title = `[${moment(new Date(commit.date)).format(
         'YYYY-MM-DD HH:mm:ss'
       )}] ${commit.title}`
@@ -270,6 +274,9 @@ export class NodeItem extends vscode.TreeItem {
     }
 
     if (showAuth) {
+      if (isMultiLine && !commit.title.startsWith('\n')) {
+        commit.title = `\n${commit.title}`
+      }
       title = `@${commit.authorName} ${title}`
     }
 

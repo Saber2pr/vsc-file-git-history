@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.35](https://github.com/Saber2pr/vsc-file-git-history/compare/v0.0.34...v0.0.35) (2025-07-07)
+
+
+### Features
+
+* **#14:** support multi line commit title ([0e17349](https://github.com/Saber2pr/vsc-file-git-history/commit/0e1734976f1d5aa3be6a79c1c3bad94a97576b05)), closes [#14](https://github.com/Saber2pr/vsc-file-git-history/issues/14)
+
 ### [0.0.33](https://github.com/Saber2pr/vsc-file-git-history/compare/v0.0.32...v0.0.33) (2025-06-04)
 
 

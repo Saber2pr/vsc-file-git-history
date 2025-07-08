@@ -270,7 +270,11 @@ export class NodeItem extends vscode.TreeItem {
       changes.push(`-${commit.deletions}`)
     }
     if (changes.length > 0) {
-      title += ` ${changes.join('|')}`
+      if(isMultiLine) {
+        title += `\n${changes.join('|')}`
+      } else {
+        title += ` ${changes.join('|')}`
+      }
     }
 
     if (showAuth) {

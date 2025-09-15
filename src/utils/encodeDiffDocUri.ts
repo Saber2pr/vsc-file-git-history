@@ -27,7 +27,7 @@ export function encodeDiffDocUri(
   extension = extIndex > -1 ? data.filePath.substring(extIndex) : ''
 
   return Uri.file('file' + extension).with({
-    scheme: 'git-graph',
+    scheme: 'diff-view',
     query: Buffer.from(JSON.stringify(data)).toString('base64'),
   })
 }

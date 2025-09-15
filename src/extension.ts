@@ -19,7 +19,6 @@ import {
   FileHistoryViewerProvider,
   NodeItem,
 } from './FileHistoryViewerProvider'
-import { loopCheck } from './utils/checkDeps'
 import { openFile } from './utils/editor'
 import { checkoutCommit, getRepoCwd } from './utils/git'
 import _debounce from 'lodash/debounce'
@@ -29,10 +28,12 @@ import {
   setContext,
   setContextOnly,
 } from './utils/setContext'
+import { DiffContentProvider } from './DiffContentProvider'
 
 // install
 export function activate(context: vscode.ExtensionContext) {
   const Provider = new FileHistoryViewerProvider()
+  const diffViewProvider = new DiffContentProvider()
 
   const refresh = (activeTextEditor = vscode.window.activeTextEditor) => {
     getContexts(CONFIG_KEY_SHOWTIME, CONFIG_KEY_SHOWAUTH).then(
@@ -50,6 +51,10 @@ export function activate(context: vscode.ExtensionContext) {
     treeDataProvider: Provider,
   })
   context.subscriptions.push(
+    vscode.workspace.registerTextDocumentContentProvider(
+      'diff-view',
+      diffViewProvider
+    ),
     vscode.commands.registerCommand(COM_FILTER, () => {
       const quickPick = vscode.window.createQuickPick()
       quickPick.placeholder = 'Input keyword to filter file git history...'
@@ -97,9 +102,6 @@ export function activate(context: vscode.ExtensionContext) {
       }
     }),
     TreeView,
-    TreeView.onDidChangeSelection(e => {
-      loopCheck()
-    }),
     vscode.window.onDidChangeActiveTextEditor(editor => {
       getContexts(CONFIG_KEY_SHOWTIME, CONFIG_KEY_SHOWAUTH).then(
         ([showTime, showAuth]) => {

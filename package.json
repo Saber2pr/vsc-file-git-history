@@ -18,6 +18,7 @@
 	"activationEvents": [
 		"*"
 	],
+	"license": "MIT",
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [

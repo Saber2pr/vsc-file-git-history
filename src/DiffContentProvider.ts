@@ -21,7 +21,7 @@ export class DiffContentProvider implements vscode.TextDocumentContentProvider {
       // 解析URI中的参数
       const diffData = this.parseDiffUri(uri)
       if (!diffData) {
-        return '// 无法解析diff参数'
+        return '// Unable to parse diff parameters'
       }
 
       // 生成diff内容
@@ -30,7 +30,7 @@ export class DiffContentProvider implements vscode.TextDocumentContentProvider {
       return diffContent
     } catch (error) {
       console.error('Error generating diff content:', error)
-      return `// 生成diff内容时出错: ${error}`
+      return `// Error generating diff content: ${error}`
     }
   }
 

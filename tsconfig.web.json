@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es6",
+    "outDir": "dist/web",
+    "rootDir": "src",
+    "esModuleInterop": true,
+    "lib": ["es6", "dom"],
+    "strict": false,
+    "moduleResolution": "node"
+  },
+  "include": ["src/web/**/*", "src/constants.ts"],
+  "exclude": ["node_modules", ".vscode-test"]
+}
+

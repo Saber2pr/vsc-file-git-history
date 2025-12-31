@@ -3,7 +3,6 @@
  */
 import * as vscode from 'vscode'
 import { isNotNullOrUndefined } from '../utils/is'
-import { safe_join } from '../utils/path'
 
 export const getRootPath = () => vscode.workspace.workspaceFolders?.[0]?.uri
 
@@ -20,8 +19,8 @@ export const openFile = async (
     return
   }
 
-  const filePath = safe_join(rootPath.fsPath, path)
-  const fileUri = vscode.Uri.file(filePath)
+  // 在 web 环境中，使用 vscode.Uri.joinPath 而不是 fsPath
+  const fileUri = vscode.Uri.joinPath(rootPath, path)
 
   try {
     // 检查文件是否存在
@@ -61,8 +60,8 @@ export const jumpToFile = async (
     return
   }
 
-  const filePath = safe_join(rootPath.fsPath, path)
-  const fileUri = vscode.Uri.file(filePath)
+  // 在 web 环境中，使用 vscode.Uri.joinPath 而不是 fsPath
+  const fileUri = vscode.Uri.joinPath(rootPath, path)
 
   try {
     const document = await vscode.workspace.openTextDocument(fileUri)

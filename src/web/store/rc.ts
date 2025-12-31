@@ -3,7 +3,7 @@
  * 使用 VS Code workspace.fs API 替代 fs-extra
  */
 import * as vscode from 'vscode'
-import { dirname, resolve } from '../utils/path-core'
+import { resolve } from '../utils/path-core'
 import { homedir } from '../utils/os'
 
 // TextEncoder 和 TextDecoder 在浏览器环境中是全局可用的
@@ -50,21 +50,16 @@ async function ensureFileExists(uri: vscode.Uri): Promise<void> {
   } catch {
     // 文件不存在，创建目录和文件
     try {
-      const dirPath = dirname(uri.fsPath)
-      const parts = dirPath.split('/').filter(p => p)
-      let currentPath = ''
-      for (const part of parts) {
-        currentPath = currentPath ? `${currentPath}/${part}` : `/${part}`
+      // 使用 vscode.Uri 的方法获取父目录，而不是使用 fsPath
+      const parentUri = vscode.Uri.joinPath(uri, '..')
+      try {
+        await vscode.workspace.fs.stat(parentUri)
+      } catch {
+        // 父目录不存在，尝试创建
         try {
-          const dirUri = vscode.Uri.file(currentPath)
-          await vscode.workspace.fs.stat(dirUri)
+          await vscode.workspace.fs.createDirectory(parentUri)
         } catch {
-          try {
-            const dirUri = vscode.Uri.file(currentPath)
-            await vscode.workspace.fs.createDirectory(dirUri)
-          } catch {
-            // 忽略创建失败
-          }
+          // 忽略创建失败（可能父目录已经存在或无法创建）
         }
       }
     } catch {
@@ -84,14 +79,17 @@ export class RCManager {
   private uri: vscode.Uri
 
   constructor(configPath: string) {
-    const configFilePath = resolve(homedir(), configPath)
-    // 将路径转换为 Uri
-    if (configFilePath.startsWith('/') || configFilePath.match(/^[a-zA-Z]:/)) {
-      this.uri = vscode.Uri.file(configFilePath)
+    // 在 web 环境中，优先使用 workspace 文件夹
+    const workspaceFolder = vscode.workspace.workspaceFolders?.[0]
+    if (workspaceFolder) {
+      // 使用 workspace 文件夹作为基础路径
+      this.uri = vscode.Uri.joinPath(workspaceFolder.uri, configPath)
     } else {
-      const workspaceFolder = vscode.workspace.workspaceFolders?.[0]
-      if (workspaceFolder) {
-        this.uri = vscode.Uri.joinPath(workspaceFolder.uri, configFilePath)
+      // 如果没有 workspace 文件夹，尝试使用 homedir
+      const configFilePath = resolve(homedir(), configPath)
+      // 在 web 环境中，避免使用 fsPath，直接使用 Uri
+      if (configFilePath.startsWith('/') || configFilePath.match(/^[a-zA-Z]:/)) {
+        this.uri = vscode.Uri.file(configFilePath)
       } else {
         this.uri = vscode.Uri.file(configFilePath)
       }

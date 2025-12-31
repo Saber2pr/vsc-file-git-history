@@ -5,3 +5,4 @@ node_modules
 *.vsix
 web/build
 .DS_Store
+.vscode-test-web/

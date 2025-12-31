@@ -13,14 +13,17 @@ export const execShell = (
 ) =>
   new Promise<string>((resolve, reject) => {
     const rootPath = getRootPath()
-    const cwd = rootPath?.fsPath || '/workspace'
+    // 在 web 环境中，如果没有有效的 workspace 路径，不设置 cwd
+    const terminalOptions: vscode.TerminalOptions = {
+      name: 'Command',
+    }
+    if (rootPath) {
+      terminalOptions.cwd = rootPath
+    }
 
     if (stdio === 'inherit') {
       // 交互式命令，使用终端
-      const terminal = vscode.window.createTerminal({
-        name: 'Command',
-        cwd,
-      })
+      const terminal = vscode.window.createTerminal(terminalOptions)
       terminal.sendText(`${command} ${args.join(' ')}`)
       terminal.show()
       resolve('')

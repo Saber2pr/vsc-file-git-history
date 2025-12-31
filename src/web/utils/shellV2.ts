@@ -4,27 +4,35 @@
  */
 import * as vscode from 'vscode'
 import { StdioOptions } from 'child_process'
+import { getRootPath } from './getRootPath'
 
 export const execShellV2 = async (
   command: string,
   args: string[] = [],
   stdio: StdioOptions = 'inherit',
-  cwd = '/workspace',
+  cwd?: string,
   env = {},
   log = true
 ): Promise<{
   data: string
   code: number
 }> => {
+  // 如果没有提供 cwd，尝试从 workspace 获取
+  const rootPath = cwd || getRootPath()
+  const terminalOptions: vscode.TerminalOptions = {
+    name: 'Git Command',
+    env: {
+      ...env,
+    },
+  }
+  // 只有在有有效路径时才设置 cwd
+  if (rootPath) {
+    terminalOptions.cwd = rootPath
+  }
+
   if (stdio === 'inherit') {
     // 对于交互式命令，使用终端执行
-    const terminal = vscode.window.createTerminal({
-      name: 'Git Command',
-      cwd,
-      env: {
-        ...env,
-      },
-    })
+    const terminal = vscode.window.createTerminal(terminalOptions)
     terminal.sendText(`${command} ${args.join(' ')}`)
     terminal.show()
     return {

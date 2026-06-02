@@ -61,7 +61,7 @@ export class DiffContentProvider implements vscode.TextDocumentContentProvider {
 
     try {
       // 使用git命令获取文件内容
-      const gitCommand = `git show ${commit}:${filePath}`
+      const gitCommand = `git show "${commit}:${filePath}"`
       const result = await runCmdV2(repo, gitCommand)
 
       if (result.code === 0) {

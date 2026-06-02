@@ -134,11 +134,9 @@
 		}
 	},
 	"scripts": {
-		"vscode:prepublish": "yarn run compile && yarn run compile-web",
+		"vscode:prepublish": "yarn run compile",
 		"compile": "tsc -p ./",
-		"compile-web": "webpack --config webpack.web.config.js --mode production",
 		"watch": "tsc -watch -p ./",
-		"watch-web": "webpack --config webpack.web.config.js --mode development --watch",
 		"build": "vsce package",
 		"release": "standard-version"
 	},

@@ -1,0 +1,19 @@
+src/DiffContentProvider.ts
+  s_7817f8bb6203cc::t_d3d179ffe8c745 64
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "cd068d76b062aa1ba65289dc3342a04631af831a",
+  "prompts": {},
+  "sessions": {
+    "s_7817f8bb6203cc": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "5ebd5c5e-60b4-44d6-8a9d-2d1ca07f61e2",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "muhai <muhai.li@tuya.com>"
+    }
+  }
+}
